@@ -1,7 +1,7 @@
-import java.util.*;
+import java.util.Comparator;
+import java.util.LinkedList;
 
-public class BestFirst extends Algoritmo {
-
+public class A extends Algoritmo {
     public Casilla result(int[][] matriz, Casilla start, Casilla end, Heuristica h) {
         int i = 0;
 
@@ -14,7 +14,7 @@ public class BestFirst extends Algoritmo {
         while (!pendents.isEmpty()) {
             i++;
             Casilla p = pendents.pop();
-             if (p.equals(end)) {
+            if (p.equals(end)) {
                 p.path = p.path + "F.";
                 System.out.println("Ended. Total iterations:" + i);
                 return p; //Devuelve la última casilla con el coste y el path completos
@@ -26,18 +26,14 @@ public class BestFirst extends Algoritmo {
                 }
                 walked.add(p);
 
-               pendents.sort(new Comparator<>() {
-                   @Override
-                   public int compare(Casilla o1, Casilla o2) { // Retorna + o2 va delante, - izquierda va delante, 0 se mantiene el orden
-                       int r1 = h.calcularHeuristica(o1, end);
-                       int r2 = h.calcularHeuristica(o2, end);
-                       return Math.round(r1-r2);
-                   }
-               });
-               System.out.println("Pendents");
-               for(int j=0;j<pendents.size();j++){
-                   System.out.println(""+pendents.get(j).height);
-               }
+                pendents.sort(new Comparator<Casilla>() {
+                    @Override
+                    public int compare(Casilla o1, Casilla o2) {
+                        Double r1 = o1.getTime() + h.calcularHeuristica(o1, end);
+                        Double r2 = o2.getTime() + h.calcularHeuristica(o2, end);
+                        return (int) Math.round(r1-r2);
+                    }
+                });
             }
         }
         return null;

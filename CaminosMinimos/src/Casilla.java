@@ -6,27 +6,24 @@ public class Casilla {
     int f, c;                   //Filas y Columnas
     int height;                 // Valor de la casilla
     double time;                   // Coste total de desplazamientos
-    String path = "I-";        // Ruta a seguir
+    String path = "";        // Ruta a seguir
 
-
-    public Casilla() {
-        this.f = f;
-        this.c = c;
-        this.height = height;
-        this.time = this.time;
-    }
     public Casilla(int f, int c, int height) { //Constructor para crear siguiente casilla a añadir
         this.f = f;
         this.c = c;
         this.height = height;
     }
 
-    public Casilla(int f, int c, int height, double cost, String camino) { //Constructor para crear siguiente casilla a añadir
+    public Casilla(int f, int c, int height,double time, double cost, String camino) { //Constructor para crear siguiente casilla a añadir
         this.f = f;
         this.c = c;
         this.height = height;
-        this.time = this.time + cost; //Tiempo total mas coste de desnivel
+        this.time = time + cost; //Tiempo total mas coste de desnivel
         this.path = this.getPath() + camino;
+    }
+
+    public Casilla() {
+
     }
 
     public int getF() {
@@ -57,13 +54,10 @@ public class Casilla {
         else
             return 0.5;
     }
-    public boolean checkEquals(Casilla casilla) {
-        return ((this.f == casilla.getF()) && (this.c == casilla.getC()));
-    }
 
     @Override
     public boolean equals(Object obj) {
-        return ((this.f == ((Casilla) obj).getF()) && (this.c == ((Casilla) obj).getC()));
+        return ((this.f == ((Casilla)obj).getF()) && (this.c == ((Casilla) obj).getC()));
     }
 
   /*  public String toString() {

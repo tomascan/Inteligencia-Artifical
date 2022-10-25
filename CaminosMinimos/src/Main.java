@@ -9,67 +9,77 @@ public class Main {
         // Matriz enunciado
 
         int[][] matriz = {
-                {1, 0, -1, 1, 3, 2, 3, 4, 3, 1},
-                {2, 1, -1, 2, 4, 2, 2, 4, 2, 2},
-                {5, 3, -1, 2, 3, 2, -1, 3, 3, 3},
-                {3, 3, 1, 3, 4, 3, -1, 1, 2, 2},
-                {2, 2, 2, 3, 6, 4, -1, 1, 2, 1},
-                {-1, -1, -1, -1, 3, 3, -1, 0, 2, -1},
-                {-1, -1, -1, -1, 2, 4, -1, 2, 2, -1},
-                {2, 3, 4, 3, 1, 3, -1, 3, 2, -1},
-                {3, 5, 6, 5, 2, 3, -1, 5, 3, -1},
-                {5, 6, 7, 6, 4, 4, -1, 6, 4, 5}};
+                { 1, 0,-1, 1, 3, 2, 3, 4, 3, 1},
+                { 2, 1,-1, 2, 4, 2, 2, 4, 2, 2},
+                { 5, 3,-1, 2, 3, 2,-1, 3, 3, 3},
+                { 3, 3, 1, 3, 4, 3,-1, 1, 2, 2},
+                { 2, 2, 2, 3, 6, 4,-1, 1, 2, 1},
+                {-1,-1,-1,-1, 3, 3,-1, 0, 2,-1},
+                {-1,-1,-1,-1, 2, 4,-1, 2, 2,-1},
+                { 2, 3, 4, 3, 1, 3,-1, 3, 2,-1},
+                { 3, 5, 6, 5, 2, 3,-1, 5, 3,-1},
+                { 5, 6, 7, 6, 4, 4,-1, 6, 4, 5}};
 
         // Matriz de tamaño 10x10 aleatoria
 
-        int[][] matrizR = new int[10][10];
-        aleatoria(matrizR);
+        int[][] matrizR = {
+                { 7, 4, 6,-1, 3, 2,-1, 4, 3, 1},
+                {-1, 4, 5,-1, 4, 2,-1, 4, 2, 2},
+                {-1,-1, 5,-1, 3, 2, 3, 3, 3, 3},
+                { 3, 3, 4, 4, 4, 3,-1, 5, 7, 2},
+                { 2, 2, 2, 3, 6, 2, 5, 1, 6, 1},
+                {-1,-1,-1,-1, 3, 4,-1, 0, 2,-1},
+                {-1,-1,-1,-1, 2, 2,-1, 2, 2,-1},
+                { 2, 3, 4, 3, 6, 3,-1, 3, 2,-1},
+                { 3, 5, 6, 5, 2, 5, 2, 2, 1,-1},
+                { 5, 6, 7, 6, 4, 2, 1, 3, 1, 0}};
 
+        // SELECCIONAR TABLERO
         System.out.println("1. Tablero enunciado \n2. Tablero aleatorio");
         int op = scan.nextInt();
-        int tablero = 0;
+        int[][] tablero = new int[10][10];
 
         switch (op){
-            case 1: tablero = 1; imprimir(matriz); break;
-            case 2: tablero = 2; imprimir(matrizR); break;
+            case 1: tablero = matriz;  imprimir(tablero); break;
+            case 2: tablero = matrizR; imprimir(tablero); break;
+            default:
+        }
+        Casilla inicial = new Casilla(0, 0, tablero[0][0]);
+        Casilla terminal = new Casilla(9, 9, tablero[9][9]);
+
+        //SELECCIONAR HEURISTICA
+        Heuristica hs = null;
+        System.out.println("Selecciona heuristica: \n1. Distancia Euclidiana \n2. Distancia Manhattan \n3. Alturas");
+        int heu = scan.nextInt();
+
+        switch (heu){
+            case 1: hs = new H1(); break;
+            case 2: hs = new H2(); break;
+            case 3: hs = new H3(); break;
             default:
         }
 
-        Casilla inicial = new Casilla(0, 0, matriz[0][0]);
-        Casilla terminal = new Casilla(9, 9, matriz[9][9]);
-
-        Heuristica h = new Heuristica();
-        double hs = h.calcularHeuristica(inicial, terminal);
-
+        //SELECCIONAR ALGORITMO
         BestFirst bf = new BestFirst();
-        Casilla complete;
-        System.out.println("\n Best First");
-        complete = bf.result(matriz, inicial, terminal, h);
+        A a = new A();
+        Casilla complete = null;
 
-        System.out.println("\nFilas: " + complete.getF()+" Columnas: "+complete.getC());
-        System.out.println("\nHeight of the value: " + complete.getHeight());
+        System.out.println("Seleccionar algoritmo: \n\t 1.Best First \n\t 2.A*");
+        int alg = scan.nextInt();
+
+        switch (alg){
+            case 1: System.out.println("\n Best First");
+                    complete = bf.result(tablero, inicial, terminal, hs);
+                    break;
+            case 2: System.out.println("\n A*");
+                    complete = a.result(tablero, inicial, terminal, hs);
+                    break;
+            default:
+        }
+
         System.out.println("\nPath to reach the target: " + complete.path);
         System.out.println("\nCost to reach the target: " + complete.getTime());
-
-
-
     }
-
-
-    public static int[][] aleatoria(int[][] matrizR) {
-        int vacio = -1;
-        for (int x = 0; x < matrizR.length; x++) {
-            for (int y = 0; y < matrizR[x].length; y++) {
-                matrizR[x][y] = (int) (Math.random() * 9 + 1);
-                if ((matrizR[x][y] == 8) || (matrizR[x][y] == 9)) {
-                    matrizR[x][y] = vacio;
-                }
-            }
-        }
-        return matrizR;
-    }
-
-
 
     public static void imprimir(int[][] matriz) {
         for (int[] ints : matriz) {
